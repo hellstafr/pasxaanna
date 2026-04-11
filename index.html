@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Пасхальное Яйцо — Акция</title>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pink:#e8a0bf;--purple:#9b59b6;
+  --grad:linear-gradient(135deg,#e8a0bf 0%,#b47bdb 50%,#9b59b6 100%);
+}
+body{font-family:'Nunito',sans-serif;background:#fff;color:#3a2a4a;overflow-x:hidden}
+.hero{
+  text-align:center;padding:50px 20px 30px;
+  background:linear-gradient(180deg,#fce4f0 0%,#fff 100%);
+  position:relative;
+}
+.hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background:radial-gradient(circle at 20% 30%,rgba(155,89,182,.08) 0%,transparent 50%),
+             radial-gradient(circle at 80% 70%,rgba(232,160,191,.1) 0%,transparent 50%);
+  pointer-events:none;
+}
+.hero h1{
+  font-family:'Comfortaa',cursive;font-size:2rem;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:8px;position:relative;
+}
+.hero .egg-icon{margin-bottom:10px;display:block;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.hero p{font-size:1rem;color:#6b5080;max-width:420px;margin:0 auto;line-height:1.6}
+.section{max-width:480px;margin:0 auto;padding:0 20px}
+.form-card{
+  background:#fff;border-radius:20px;padding:30px 24px;margin:30px auto;
+  box-shadow:0 8px 40px rgba(155,89,182,.12);
+  border:1.5px solid #ede0f7;max-width:440px;
+}
+.form-card h2{font-family:'Comfortaa',cursive;font-size:1.2rem;color:var(--purple);text-align:center;margin-bottom:18px}
+.form-card input,.form-card select{
+  width:100%;padding:14px 18px;border:2px solid #ede0f7;border-radius:14px;
+  font-size:1rem;font-family:'Nunito',sans-serif;outline:none;
+  transition:border .2s;background:#faf7fd;margin-bottom:12px;
+}
+.form-card select{
+  appearance:none;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%239b59b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+  background-repeat:no-repeat;background-position:right 18px center;
+}
+.form-card input:focus,.form-card select:focus{border-color:var(--purple)}
+.form-card input::placeholder{color:#b8a5c8}
+.btn-main{
+  display:block;width:100%;margin-top:8px;padding:16px;
+  background:var(--grad);color:#fff;border:none;border-radius:14px;
+  font-size:1rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;
+  transition:transform .15s,box-shadow .2s;
+  box-shadow:0 4px 20px rgba(155,89,182,.3);
+}
+.btn-main:active{transform:scale(.97)}
+.prizes{padding:10px 0 20px}
+.prizes h2{font-family:'Comfortaa',cursive;font-size:1.3rem;color:var(--purple);text-align:center;margin-bottom:20px}
+.prizes-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:440px;margin:0 auto}
+.prize-card{
+  background:linear-gradient(145deg,#fef7fb,#f3e8f9);
+  border-radius:16px;padding:22px 14px;text-align:center;
+  border:1.5px solid #ede0f7;transition:transform .2s;
+}
+.prize-card:hover{transform:translateY(-4px)}
+.prize-card .icon{font-size:2.2rem;margin-bottom:8px;display:block}
+.prize-card .name{font-weight:700;font-size:.9rem;color:#5a3d7a}
+.prize-card .desc{font-size:.75rem;color:#9b80b3;margin-top:4px}
+.prize-card.big{grid-column:1/-1;background:var(--grad);color:#fff;border:none;padding:26px;}
+.prize-card.big .name{color:#fff;font-size:1.05rem}
+.prize-card.big .desc{color:rgba(255,255,255,.8)}
+.feed-section{
+  background:#fff;border-radius:24px;
+  border:1.5px solid #ede0f7;overflow:hidden;
+  margin:20px auto 40px;max-width:440px;
+}
+.feed-header{
+  background:var(--grad);padding:12px 20px;
+  color:#fff;font-weight:700;
+  display:flex;align-items:center;gap:8px;
+}
+.feed-list{padding:8px 0;max-height:180px;overflow-y:auto;background:#fefafd;}
+.feed-item{
+  display:flex;align-items:center;gap:12px;
+  padding:8px 20px;border-bottom:1px solid #f3e5f0;
+  font-size:0.8rem;transition:opacity 0.4s;
+}
+.feed-icon{font-size:1.2rem;width:28px;}
+.feed-text strong{color:#9b59b6;}
+.feed-prize{
+  background:#f0e6f5;border-radius:30px;
+  padding:2px 8px;font-size:0.7rem;font-weight:700;color:#7c3aed;
+}
+.footer{text-align:center;padding:20px;font-size:.75rem;color:#c0afd0}
+.sparkle{position:absolute;width:6px;height:6px;background:var(--pink);border-radius:50%;
+  opacity:0;animation:sparkle 2.5s ease-in-out infinite}
+@keyframes sparkle{0%,100%{opacity:0;transform:scale(0)}50%{opacity:.7;transform:scale(1)}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="egg-icon">
+    <svg width="120" height="150" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="eggGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#d8a0e8"/>
+          <stop offset="50%" stop-color="#b47bdb"/>
+          <stop offset="100%" stop-color="#9b59b6"/>
+        </linearGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <ellipse cx="60" cy="80" rx="48" ry="62" fill="url(#eggGrad)" filter="url(#glow)"/>
+      <ellipse cx="42" cy="55" rx="14" ry="22" fill="rgba(255,255,255,.25)" transform="rotate(-15 42 55)"/>
+      <path d="M18,60 Q35,50 60,58 Q85,66 102,56" stroke="#f9c4d9" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M22,82 Q40,74 60,82 Q80,90 98,80" stroke="#f7d06b" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M26,100 L34,92 L42,100 L50,92 L58,100 L66,92 L74,100 L82,92 L90,100" stroke="rgba(255,255,255,.55)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="36" cy="42" r="4" fill="#f9c4d9" opacity=".8"/>
+      <circle cx="55" cy="36" r="3" fill="#f7d06b" opacity=".8"/>
+      <circle cx="76" cy="44" r="4.5" fill="#f9c4d9" opacity=".7"/>
+      <circle cx="45" cy="115" r="3.5" fill="rgba(255,255,255,.5)"/>
+      <circle cx="70" cy="112" r="3" fill="rgba(255,255,255,.4)"/>
+      <text x="28" y="72" font-size="10" opacity=".6">✦</text>
+      <text x="82" y="70" font-size="8" opacity=".5">✦</text>
+      <text x="55" y="120" font-size="9" opacity=".5">✦</text>
+    </svg>
+  </div>
+  <h1>Пасхальное Яйцо</h1>
+  <p>Открой пасхальное яйцо и получи один из эксклюзивных подарков! Акция ограничена — успей принять участие</p>
+  <div class="sparkle" style="top:15%;left:12%;animation-delay:0s"></div>
+  <div class="sparkle" style="top:40%;left:85%;animation-delay:.8s"></div>
+  <div class="sparkle" style="top:70%;left:25%;animation-delay:1.5s"></div>
+  <div class="sparkle" style="top:20%;left:75%;animation-delay:.4s"></div>
+</div>
+
+<div class="section">
+  <div class="form-card">
+    <h2>🐣 Участвуй в Акции</h2>
+    <input type="text" id="userName" placeholder="Ваше имя" autocomplete="off">
+    <select id="userCountry">
+      <option value="" disabled selected>Выберите страну</option>
+      <option>Россия</option><option>Украина</option><option>Беларусь</option>
+      <option>Казахстан</option><option>Другая</option>
+    </select>
+    <input type="number" id="userAge" placeholder="Ваш возраст" min="1" max="120">
+    <input type="text" id="userReferral" placeholder="Откуда узнали о нас? (например, Instagram, друг, реклама)" autocomplete="off">
+    <button class="btn-main" onclick="goToEgg()">🥚 Перейти к пасхальному яйцу</button>
+  </div>
+</div>
+
+<div class="section prizes">
+  <h2>🎁 Пул Подарков</h2>
+  <div class="prizes-grid">
+    <div class="prize-card"><span class="icon">🧦</span><div class="name">Пасхальные носки</div><div class="desc">Тёплые и праздничные</div></div>
+    <div class="prize-card"><span class="icon">🎧</span><div class="name">AirPods Pro 2</div><div class="desc">Беспроводные наушники</div></div>
+    <div class="prize-card"><span class="icon">🎟️</span><div class="name">Купон 5 000 ₽</div><div class="desc">К маркетплейсам</div></div>
+    <div class="prize-card"><span class="icon">🎮</span><div class="name">PlayStation 5</div><div class="desc">Игровая консоль Sony</div></div>
+    <div class="prize-card"><span class="icon">🕹️</span><div class="name">Nintendo Switch</div><div class="desc">Портативная консоль</div></div>
+    <div class="prize-card"><span class="icon">🎀</span><div class="name">И многое другое</div><div class="desc">Сюрпризы ждут!</div></div>
+    <div class="prize-card big"><span class="icon">📱</span><div class="name">iPhone</div><div class="desc">Главный приз — может выпасть каждому!</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="feed-section">
+    <div class="feed-header">🎉 Последние выигрыши</div>
+    <div class="feed-list" id="feedList"></div>
+  </div>
+</div>
+
+<div class="footer">© 2026 Пасхальная Акция. Все права защищены.</div>
+
+<script>
+function goToEgg(){
+  const name = document.getElementById('userName').value.trim();
+  const country = document.getElementById('userCountry').value;
+  const age = document.getElementById('userAge').value.trim();
+  const referral = document.getElementById('userReferral').value.trim();
+  if(!name){
+    const el = document.getElementById('userName');
+    el.style.borderColor='#e74c6f';
+    el.placeholder='Пожалуйста, введите имя';
+    return;
+  }
+  if(!country){ alert('Пожалуйста, выберите страну'); return; }
+  if(!age||isNaN(age)||age<1||age>120){ alert('Введите корректный возраст (от 1 до 120)'); return; }
+  localStorage.setItem('userName', name);
+  localStorage.setItem('userCountry', country);
+  localStorage.setItem('userAge', age);
+  localStorage.setItem('userReferral', referral);
+  window.location.href = 'egg.html';
+}
+
+const prizesForFeed = [
+  { name: "Пасхальные носки", icon: "🧦" },
+  { name: "AirPods Pro 2", icon: "🎧" },
+  { name: "Купон 5000 ₽", icon: "🎟️" },
+  { name: "iPhone", icon: "📱" },
+  { name: "Power Bank", icon: "🔋" },
+];
+const feedNames = [
+  "Анна","Дмитрий","Ольга","Иван","Татьяна","Сергей","Наталья","Михаил",
+  "Екатерина","Андрей","Юлия","Алексей","Виктория","Светлана","Роман"
+];
+function getRnd(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function addFeedWin(){
+  const fl = document.getElementById('feedList');
+  const prize = getRnd(prizesForFeed);
+  const name = getRnd(feedNames);
+  const item = document.createElement('div');
+  item.className = 'feed-item';
+  item.style.opacity = '0';
+  item.innerHTML = `<div class="feed-icon">${prize.icon}</div><div class="feed-text"><strong>${name}</strong> выиграл(а) <span class="feed-prize">${prize.name}</span></div>`;
+  fl.insertBefore(item, fl.firstChild);
+  setTimeout(()=>{ item.style.opacity='1'; }, 10);
+  while(fl.children.length > 5) fl.removeChild(fl.lastChild);
+}
+for(let i=0;i<3;i++) addFeedWin();
+setInterval(addFeedWin, Math.random()*3000+2000);
+</script>
+</body>
+</html>

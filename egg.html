@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Раскрась яйцо и получи приз</title>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Nunito',sans-serif;
+  min-height:100vh;
+  background:linear-gradient(145deg, #f9eef5 0%, #f1e5fa 100%);
+  padding:20px;
+  position:relative;
+  overflow-x:hidden;
+}
+
+/* Пасхальный фон */
+.easter-bg{
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  pointer-events:none;
+  z-index:0;
+  overflow:hidden;
+}
+.easter-item{
+  position:absolute;
+  font-size:1.4rem;
+  opacity:0.13;
+  animation:floatEaster linear infinite;
+  user-select:none;
+}
+@keyframes floatEaster{
+  0%{transform:translateY(100vh) rotate(0deg);}
+  100%{transform:translateY(-120px) rotate(20deg);}
+}
+.container{
+  max-width:550px;
+  margin:0 auto;
+  text-align:center;
+  position:relative;
+  z-index:1;
+}
+.egg-wrapper{
+  margin:20px auto;
+  display:inline-block;
+  cursor:pointer;
+}
+.egg-svg{
+  display:block;
+  margin:0 auto;
+  filter:drop-shadow(0 20px 25px rgba(0,0,0,0.15));
+  transition:all 0.2s;
+  width:100%;
+  max-width:280px;
+}
+.crack-effect{ transform:scale(1.06); filter:drop-shadow(0 0 18px #b47bdb); }
+.tap-hint{
+  background:white;
+  color:#6a2e6b;
+  padding:12px 20px;
+  border-radius:40px;
+  font-weight:600;
+  display:inline-block;
+  margin-top:15px;
+  font-size:0.9rem;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+.progress-text{
+  margin-top:10px;
+  font-weight:bold;
+  color:#9b59b6;
+}
+.coupon-card{
+  background:linear-gradient(135deg, #9b4d96 0%, #6a2e6b 100%);
+  border-radius:32px;
+  padding:30px 20px;
+  color:white;
+  box-shadow:0 25px 40px rgba(106,46,107,0.4);
+  margin-top:20px;
+  animation:floatUp 0.5s ease-out;
+  position:relative;
+  overflow:hidden;
+}
+.coupon-card::before{
+  content:"✨";
+  position:absolute;top:-20px;right:-20px;
+  font-size:120px;opacity:0.1;
+}
+.coupon-card::after{
+  content:"🎁";
+  position:absolute;bottom:-20px;left:-20px;
+  font-size:100px;opacity:0.1;
+}
+@keyframes floatUp{
+  from{opacity:0;transform:translateY(40px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.coupon-title{
+  font-family:'Comfortaa',cursive;
+  font-size:1.8rem;font-weight:700;margin-bottom:10px;
+}
+.coupon-amount{
+  font-size:3.2rem;font-weight:800;margin:15px 0;
+  background:linear-gradient(135deg,#FFD966,#FFB347);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.spend-text{
+  font-size:0.9rem;
+  background:rgba(255,255,255,0.2);
+  display:inline-block;padding:6px 16px;border-radius:30px;margin-top:10px;
+}
+.btn{
+  background:linear-gradient(135deg,#e8a0bf 0%,#b47bdb 50%,#9b59b6 100%);
+  border:none;color:white;padding:14px 32px;
+  border-radius:40px;font-weight:bold;font-size:1rem;
+  font-family:'Nunito',sans-serif;
+  cursor:pointer;margin-top:20px;transition:transform 0.2s,box-shadow 0.2s;
+  box-shadow:0 4px 20px rgba(155,89,182,.35);
+  display:inline-block;
+}
+.btn:active{transform:scale(0.96);}
+.reset-btn{
+  background:transparent;
+  border:2px solid #9b4d96;color:#9b4d96;
+  padding:10px 24px;border-radius:40px;
+  font-weight:700;font-family:'Nunito',sans-serif;
+  cursor:pointer;margin-top:15px;
+}
+.hidden{display:none;}
+.info-text{
+  background:rgba(255,255,255,0.8);
+  border-radius:20px;padding:10px;
+  margin:20px 0;font-size:0.85rem;color:#5a3d7a;
+}
+.feed-section{
+  background:#fff;border-radius:24px;
+  border:1.5px solid #ede0f7;overflow:hidden;margin-top:30px;
+}
+.feed-header{
+  background:linear-gradient(135deg,#e8a0bf 0%,#b47bdb 50%,#9b59b6 100%);
+  padding:12px 20px;color:#fff;font-weight:700;
+  display:flex;align-items:center;gap:8px;
+}
+.feed-list{
+  padding:8px 0;max-height:180px;overflow-y:auto;background:#fefafd;
+}
+.feed-item{
+  display:flex;align-items:center;gap:12px;
+  padding:8px 20px;border-bottom:1px solid #f3e5f0;
+  font-size:0.8rem;transition:opacity 0.4s;
+}
+.feed-icon{font-size:1.2rem;width:28px;}
+.feed-text strong{color:#9b59b6;}
+.feed-prize{
+  background:#f0e6f5;border-radius:30px;
+  padding:2px 8px;font-size:0.7rem;font-weight:700;color:#7c3aed;
+}
+</style>
+</head>
+<body>
+<div class="easter-bg" id="easterBg"></div>
+<div class="container">
+  <div id="eggArea" class="egg-wrapper">
+    <svg id="eggSvg" class="egg-svg" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="whiteEgg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#fdfdfd"/>
+          <stop offset="100%" stop-color="#f0f0f0"/>
+        </linearGradient>
+        <linearGradient id="colorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#d8a0e8"/>
+          <stop offset="50%" stop-color="#b47bdb"/>
+          <stop offset="100%" stop-color="#9b59b6"/>
+        </linearGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <ellipse id="eggBody" cx="60" cy="80" rx="48" ry="62" fill="url(#whiteEgg)" filter="url(#glow)"/>
+      <ellipse cx="42" cy="55" rx="14" ry="22" fill="rgba(255,255,255,.3)" transform="rotate(-15 42 55)"/>
+      <path id="stripe1" d="M18,60 Q35,50 60,58 Q85,66 102,56" stroke="#ddd" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path id="stripe2" d="M22,82 Q40,74 60,82 Q80,90 98,80" stroke="#ccc" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path id="stripe3" d="M26,100 L34,92 L42,100 L50,92 L58,100 L66,92 L74,100 L82,92 L90,100" stroke="#bbb" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle id="dot1" cx="36" cy="42" r="4" fill="#ddd"/>
+      <circle id="dot2" cx="55" cy="36" r="3" fill="#ccc"/>
+      <circle id="dot3" cx="76" cy="44" r="4.5" fill="#ddd"/>
+      <text id="star1" x="28" y="72" font-size="10" fill="#bbb">✦</text>
+      <text id="star2" x="82" y="70" font-size="8" fill="#bbb">✦</text>
+      <text id="star3" x="55" y="120" font-size="9" fill="#bbb">🐣</text>
+    </svg>
+    <div class="tap-hint" id="hint">🎨 Нажми на яйцо, чтобы раскрасить (0/7)</div>
+    <div class="progress-text" id="progress"></div>
+  </div>
+
+  <div id="couponArea" class="hidden"></div>
+
+  <div id="managerBtnArea" class="hidden">
+    <button class="btn" id="toManagerBtn" onclick="goToManager()">💬 Перейти к менеджеру →</button>
+  </div>
+
+
+
+  <div class="info-text" id="userInfo"></div>
+
+  <div class="feed-section">
+    <div class="feed-header">🎉 Последние выигрыши</div>
+    <div class="feed-list" id="feedList"></div>
+  </div>
+</div>
+
+<script>
+  const userName = localStorage.getItem('userName') || 'Гость';
+  const userCountry = localStorage.getItem('userCountry') || '';
+  const userAge = localStorage.getItem('userAge') || '';
+  const countryFrom = {
+    'Россия': 'из России',
+    'Украина': 'из Украины',
+    'Беларусь': 'из Беларуси',
+    'Казахстан': 'из Казахстана',
+    'Другая': 'из другой страны'
+  };
+  const countryLabel = countryFrom[userCountry] || (userCountry ? 'из ' + userCountry : '');
+  document.getElementById('userInfo').innerHTML =
+    `👋 ${userName}, ${userAge} лет, ${countryLabel}<br>Нажми на яйцо 7 раз, чтобы получить купон!`;
+
+  function goToManager() {
+    window.location.href = 'manager.html';
+  }
+
+  let touches = 0;
+  const required = 7;
+  let isColored = false;
+  let coloringActive = true;
+
+  const eggBody = document.getElementById('eggBody');
+  const stripe1 = document.getElementById('stripe1');
+  const stripe2 = document.getElementById('stripe2');
+  const stripe3 = document.getElementById('stripe3');
+  const dot1 = document.getElementById('dot1');
+  const dot2 = document.getElementById('dot2');
+  const dot3 = document.getElementById('dot3');
+  const star1 = document.getElementById('star1');
+  const star2 = document.getElementById('star2');
+  const star3 = document.getElementById('star3');
+  const hint = document.getElementById('hint');
+
+  function applyColor(percent) {
+    const r = Math.min(255, Math.floor(180 + 75 * percent));
+    const g = Math.min(255, Math.floor(140 + 100 * percent));
+    const b = Math.min(255, Math.floor(200 + 55 * percent));
+    const mainColor = `rgb(${r},${g},${b})`;
+    if (percent >= 1) {
+      eggBody.setAttribute('fill', 'url(#colorGrad)');
+    } else {
+      eggBody.setAttribute('fill', mainColor);
+    }
+    stripe1.setAttribute('stroke', percent > 0.5 ? '#f9c4d9' : '#e0a0c0');
+    stripe2.setAttribute('stroke', percent > 0.5 ? '#f7d06b' : '#d0b060');
+    stripe3.setAttribute('stroke', percent > 0.6 ? 'rgba(255,255,255,.7)' : '#bbb');
+    dot1.setAttribute('fill', percent > 0.3 ? '#f9c4d9' : '#ccc');
+    dot2.setAttribute('fill', percent > 0.3 ? '#f9c4d9' : '#ccc');
+    dot3.setAttribute('fill', percent > 0.3 ? '#f9c4d9' : '#ccc');
+    star1.setAttribute('fill', percent > 0.4 ? '#fff' : '#aaa');
+    star2.setAttribute('fill', percent > 0.4 ? '#fff' : '#aaa');
+    star3.setAttribute('fill', percent > 0.4 ? '#fff' : '#aaa');
+  }
+
+  function updateProgress() {
+    const percent = Math.min(1, touches / required);
+    applyColor(percent);
+    hint.innerHTML = `🎨 Нажми на яйцо, чтобы раскрасить (${touches}/${required})`;
+    if (touches >= required && !isColored) {
+      isColored = true;
+      coloringActive = false;
+      showCouponAndManagerButton();
+    }
+  }
+
+  function handleEggClick(e) {
+    if (!coloringActive || isColored) return;
+    e.stopPropagation();
+    touches++;
+    updateProgress();
+    const svg = document.getElementById('eggSvg');
+    svg.classList.add('crack-effect');
+    setTimeout(() => svg.classList.remove('crack-effect'), 100);
+  }
+
+  const eggWrapper = document.getElementById('eggArea');
+  eggWrapper.addEventListener('click', handleEggClick);
+  eggWrapper.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    handleEggClick(e);
+  });
+
+  function showCouponAndManagerButton() {
+    const prizes = [
+      {
+        icon: '📱',
+        title: 'iPhone 17',
+        amount: null,
+        amountLabel: null,
+        desc: 'Новейший смартфон Apple',
+        extra: '🍀 Вам выпал главный приз!',
+        img: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-17-finish-select-lavender-202509?wid=400&hei=500&fmt=png-alpha&.v=1748387468614'
+      },
+      {
+        icon: '🎟️',
+        title: 'ПОДАРОЧНЫЙ КУПОН',
+        amount: '5000 ₽',
+        amountLabel: 'на маркетплейсы',
+        desc: null,
+        extra: '🎁 Можете потратить на всё что угодно',
+        img: null
+      },
+      {
+        icon: '🎧',
+        title: 'AirPods Pro 2',
+        amount: null,
+        amountLabel: null,
+        desc: 'Беспроводные наушники Apple с шумоподавлением',
+        extra: '🎶 Погружайтесь в музыку!',
+        img: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airpods-pro-2-hero-select-202409?wid=400&hei=400&fmt=png-alpha&.v=1724607693816'
+      }
+    ];
+    const prize = prizes[Math.floor(Math.random() * prizes.length)];
+    localStorage.setItem('wonPrize', prize.title);
+
+    document.getElementById('couponArea').innerHTML = `
+      <div class="coupon-card">
+        ${prize.img ? `<img src="https://pacxa.ru/${prize.img}" alt="${prize.title}" style="width:160px;height:auto;object-fit:contain;display:block;margin:0 auto 12px;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.25));border-radius:12px;">` : ''}
+        <div class="coupon-title">${prize.icon} ${prize.title}</div>
+        ${prize.amount ? `<div class="coupon-amount">${prize.amount}</div>` : ''}
+        ${prize.amountLabel ? `<div class="coupon-desc" style="color:rgba(255,255,255,.85);font-size:.95rem;">${prize.amountLabel}</div>` : ''}
+        ${prize.desc ? `<div class="coupon-desc" style="color:rgba(255,255,255,.85);font-size:1rem;margin:12px 0;">${prize.desc}</div>` : ''}
+        <div class="spend-text">${prize.extra}</div>
+      </div>
+    `;
+    document.getElementById('couponArea').classList.remove('hidden');
+    document.getElementById('managerBtnArea').classList.remove('hidden');
+  }
+
+  // Пасхальный фон
+  const easterEmojis = ['🥚','🐣','🌸','🌷','🐇','🌿','✨','🦋'];
+  const bg = document.getElementById('easterBg');
+  for(let i = 0; i < 35; i++){
+    const el = document.createElement('div');
+    el.className = 'easter-item';
+    el.textContent = easterEmojis[Math.floor(Math.random() * easterEmojis.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.animationDuration = (18 + Math.random() * 20) + 's';
+    el.style.animationDelay = (Math.random() * 20) + 's';
+    el.style.fontSize = (2.2 + Math.random() * 1.8) + 'rem';
+    bg.appendChild(el);
+  }
+
+  const prizesForFeed = [
+    { name: "Пасхальные носки", icon: "🧦" },
+    { name: "AirPods Pro 2", icon: "🎧" },
+    { name: "Купон 5000 ₽", icon: "🎟️" },
+    { name: "iPhone 17", icon: "📱" },
+    { name: "Power Bank", icon: "🔋" },
+  ];
+  const feedNames = [
+    "Анна","Дмитрий","Ольга","Иван","Татьяна","Сергей","Наталья","Михаил",
+    "Екатерина","Андрей","Юлия","Алексей","Виктория","Владимир","Ирина",
+    "Николай","Светлана","Павел","Ксения","Роман"
+  ];
+  function getRandomItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function addRandomWin() {
+    const feedList = document.getElementById('feedList');
+    const prize = getRandomItem(prizesForFeed);
+    const winnerName = getRandomItem(feedNames);
+    const feedItem = document.createElement('div');
+    feedItem.className = 'feed-item';
+    feedItem.style.opacity = '0';
+    feedItem.innerHTML = `
+      <div class="feed-icon">${prize.icon}</div>
+      <div class="feed-text"><strong>${winnerName}</strong> выиграл(а) <span class="feed-prize">${prize.name}</span></div>
+    `;
+    const feedList2 = document.getElementById('feedList');
+    feedList2.insertBefore(feedItem, feedList2.firstChild);
+    setTimeout(() => { feedItem.style.opacity = '1'; }, 10);
+    while (feedList2.children.length > 5) feedList2.removeChild(feedList2.lastChild);
+  }
+  for (let i = 0; i < 3; i++) addRandomWin();
+  setInterval(addRandomWin, Math.random() * 3000 + 2000);
+</script>
+</body>
+</html>
