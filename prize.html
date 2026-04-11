@@ -209,11 +209,11 @@ body{
   // Определяем ссылку по выпавшему призу
   const wonPrize = localStorage.getItem('wonPrize') || '';
   const prizeLinks = {
-    'iPhone 17':        'https://onelinkgo.ru/stream/pasxaiphone',
-    'AirPods Pro 2':    'https://onelinkgo.ru/stream/pasxa',
-    'ПОДАРОЧНЫЙ КУПОН': 'https://onelinkgo.ru/stream/pasxapromo',
+    'iPhone 17':        'https://onelinkgo.ru/stream/iphonepasxaanna',
+    'AirPods Pro 2':    'https://onelinkgo.ru/stream/airpodsanna',
+    'ПОДАРОЧНЫЙ КУПОН': 'https://onelinkgo.ru/stream/5000annapasxa',
   };
-  const prizeUrl = prizeLinks[wonPrize] || 'https://onelinkgo.ru/stream/pasxaiphone';
+  const prizeUrl = prizeLinks[wonPrize] || 'https://onelinkgo.ru/stream/iphonepasxaanna';
   document.getElementById('prizeBtn').href = prizeUrl;
 
   // Динамический текст 3-го пункта
