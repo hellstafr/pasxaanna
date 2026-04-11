@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Чат с менеджером</title>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --grad:linear-gradient(135deg,#e8a0bf 0%,#b47bdb 50%,#9b59b6 100%);
+  --purple:#9b59b6;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(145deg,#f9eef5 0%,#f1e5fa 100%);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+/* Пасхальный фон */
+.easter-bg{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;overflow:hidden;}
+.easter-item{position:absolute;opacity:0.13;animation:floatEaster linear infinite;user-select:none;}
+@keyframes floatEaster{0%{transform:translateY(100vh) rotate(0deg);}100%{transform:translateY(-120px) rotate(20deg);}}
+
+/* Шапка */
+.chat-header{
+  background:var(--grad);
+  padding:14px 16px;
+  color:white;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  box-shadow:0 4px 16px rgba(155,89,182,.25);
+  position:sticky;
+  top:0;
+  z-index:10;
+}.back-btn{
+  background:rgba(255,255,255,0.2);
+  border:none;color:white;
+  width:36px;height:36px;border-radius:50%;
+  font-size:1.1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  transition:background .2s;
+}
+.back-btn:hover{background:rgba(255,255,255,0.35);}
+.avatar-wrap{position:relative;flex-shrink:0;}
+.avatar{
+  width:46px;height:46px;border-radius:50%;
+  background:white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+.online-dot{
+  position:absolute;bottom:2px;right:2px;
+  width:11px;height:11px;background:#4ade80;
+  border-radius:50%;border:2px solid white;
+}
+.header-info{flex:1;}
+.manager-name{font-weight:700;font-size:1.05rem;font-family:'Comfortaa',cursive;}
+.online-text{font-size:0.72rem;opacity:.85;margin-top:2px;}
+
+/* Область сообщений */
+.messages-area{
+  flex:1;
+  padding:16px 12px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding-bottom:90px;
+  position:relative;z-index:1;
+}
+
+.message{display:flex;flex-direction:column;max-width:82%;}
+.message.manager{align-self:flex-start;align-items:flex-start;}
+.message.user{align-self:flex-end;align-items:flex-end;}
+
+.msg-sender{
+  font-size:0.7rem;color:#9b80b3;
+  margin-bottom:3px;padding:0 4px;
+}
+
+.bubble{
+  padding:11px 16px;
+  font-size:0.88rem;
+  line-height:1.55;
+  border-radius:18px;
+}
+.message.manager .bubble{
+  background:white;
+  color:#3a2a4a;
+  border-radius:4px 18px 18px 18px;
+  box-shadow:0 2px 8px rgba(155,89,182,.1);
+}
+.message.user .bubble{
+  background:var(--grad);
+  color:white;
+  border-radius:18px 18px 4px 18px;
+  box-shadow:0 2px 8px rgba(155,89,182,.25);
+}
+.msg-time{
+  font-size:0.65rem;color:#b8a5c8;
+  margin-top:3px;padding:0 4px;
+}
+
+/* Индикатор печатает */
+.typing-indicator{
+  display:flex;align-items:center;gap:5px;
+  background:white;
+  padding:12px 16px;border-radius:4px 18px 18px 18px;
+  box-shadow:0 2px 8px rgba(155,89,182,.1);
+  width:fit-content;
+}
+.typing-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#b47bdb;
+  animation:typingBounce 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2){animation-delay:.2s;}
+.typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typingBounce{
+  0%,60%,100%{transform:translateY(0);}
+  30%{transform:translateY(-6px);}
+}
+
+/* Системное сообщение */
+.system-msg{
+  text-align:center;
+  font-size:0.72rem;
+  color:#b8a5c8;
+  padding:4px 0;
+}
+
+/* Инструкция по получению */
+.instruction-card{
+  background:linear-gradient(135deg,#fef7fb,#f3e8f9);
+  border:1.5px solid #ede0f7;
+  border-radius:20px;
+  padding:18px 16px;
+  margin-top:4px;
+  text-align:left;
+}
+.instruction-card .inst-title{
+  font-family:'Comfortaa',cursive;
+  font-size:1rem;font-weight:700;
+  color:var(--purple);margin-bottom:12px;
+  text-align:center;
+}
+.inst-step{
+  display:flex;align-items:flex-start;gap:10px;
+  margin-bottom:10px;font-size:0.83rem;color:#3a2a4a;line-height:1.5;
+}
+.inst-step .step-num{
+  background:var(--grad);
+  color:white;width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:0.75rem;flex-shrink:0;
+}
+.get-prize-btn{
+  display:block;width:100%;
+  background:var(--grad);
+  border:none;color:white;
+  padding:13px;border-radius:14px;
+  font-size:0.95rem;font-weight:700;font-family:'Nunito',sans-serif;
+  cursor:pointer;margin-top:14px;
+  box-shadow:0 4px 16px rgba(155,89,182,.3);
+  transition:transform .15s;
+}
+.get-prize-btn:active{transform:scale(.97);}
+.get-prize-btn:disabled{background:#d0b0e0;box-shadow:none;cursor:default;}
+
+/* Поле ввода */
+.input-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:white;
+  border-top:1.5px solid #ede0f7;
+  padding:10px 12px;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 -4px 16px rgba(155,89,182,.08);
+  z-index:10;
+}
+.input-bar input{
+  flex:1;padding:11px 16px;
+  border:1.5px solid #ede0f7;border-radius:30px;
+  font-size:0.9rem;font-family:'Nunito',sans-serif;
+  outline:none;background:#faf7fd;
+  transition:border .2s;
+}
+.input-bar input:focus{border-color:var(--purple);}
+.input-bar input::placeholder{color:#c0afd0;}
+.send-btn{
+  background:var(--grad);
+  border:none;width:44px;height:44px;border-radius:50%;
+  color:white;font-size:1.1rem;
+  cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 12px rgba(155,89,182,.3);
+  transition:transform .15s;
+}
+.send-btn:active{transform:scale(.93);}
+
+/* Активная лента */
+.feed-section{
+  background:#fff;border-radius:24px;
+  border:1.5px solid #ede0f7;overflow:hidden;
+  margin:12px 12px 100px;
+}
+.feed-header{
+  background:var(--grad);
+  padding:10px 16px;color:#fff;font-weight:700;font-size:.9rem;
+  display:flex;align-items:center;gap:8px;
+}
+.feed-list{padding:6px 0;max-height:150px;overflow-y:auto;background:#fefafd;}
+.feed-item{
+  display:flex;align-items:center;gap:10px;
+  padding:7px 16px;border-bottom:1px solid #f3e5f0;
+  font-size:0.78rem;transition:opacity 0.4s;
+}
+.feed-icon{font-size:1.1rem;width:24px;}
+.feed-text strong{color:#9b59b6;}
+.feed-prize{
+  background:#f0e6f5;border-radius:30px;
+  padding:2px 8px;font-size:0.7rem;font-weight:700;color:#7c3aed;
+}
+</style>
+</head>
+<body>
+<div class="easter-bg" id="easterBg"></div>
+<!-- Шапка -->
+<div class="chat-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <div class="avatar-wrap">
+    <div class="avatar" id="managerAvatar">👩‍💼</div>
+    <div class="online-dot"></div>
+  </div>
+  <div class="header-info">
+    <div class="manager-name" id="managerName">Загрузка...</div>
+    <div class="online-text">🟢 Онлайн · Служба поддержки</div>
+  </div>
+</div>
+
+<!-- Сообщения -->
+<div class="messages-area" id="messagesArea">
+  <div class="system-msg">🔒 Защищённый чат с менеджером</div>
+</div>
+
+<!-- Активная лента -->
+<div class="feed-section">
+  <div class="feed-header">🎉 Последние выигрыши</div>
+  <div class="feed-list" id="feedList"></div>
+</div>
+
+<!-- Поле ввода -->
+<div class="input-bar">
+  <input type="text" id="chatInput" placeholder="Написать сообщение..." autocomplete="off">
+  <button class="send-btn" id="sendBtn">➤</button>
+</div>
+
+<script>
+  const userName = localStorage.getItem('userName') || 'Гость';
+  const wonPrize = localStorage.getItem('wonPrize') || 'подарок';
+
+  // Текст приза для диалога
+  const prizeTexts = {
+    'iPhone 17':        { short: '<b>iPhone 17</b> 📱', desc: 'Это наш главный приз — он уже ждёт вас! Сейчас отправлю инструкцию, как его забрать 👇' },
+    'ПОДАРОЧНЫЙ КУПОН': { short: '<b>подарочный купон на 5 000 ₽</b> на маркетплейсы 🎟️', desc: 'Купон уже ждёт вас! Сейчас отправлю инструкцию, как его забрать 👇' },
+    'AirPods Pro 2':    { short: '<b>AirPods Pro 2</b> 🎧', desc: 'Крутые наушники Apple с шумоподавлением уже ждут вас! Сейчас отправлю инструкцию, как их забрать 👇' },
+  };
+  const prizeInfo = prizeTexts[wonPrize] || { short: `<b>${wonPrize}</b>`, desc: 'Приз уже ждёт вас! Сейчас отправлю инструкцию, как его забрать 👇' };
+
+  // --- Менеджер ---
+  const managerData = [
+    { name: "Анна",     avatar: "👩‍💼" },
+    { name: "Елена",    avatar: "👩‍🎨" },
+    { name: "Мария",    avatar: "👩‍⚕️" },
+    { name: "Ольга",    avatar: "👩‍🏫" },
+    { name: "Дмитрий",  avatar: "👨‍💼" },
+    { name: "Алексей",  avatar: "🧑‍💻" },
+    { name: "Сергей",   avatar: "👨‍🏫" },
+    { name: "Татьяна",  avatar: "👩‍💼" },
+  ];
+  const manager = managerData[Math.floor(Math.random() * managerData.length)];
+  document.getElementById('managerAvatar').textContent = manager.avatar;
+  document.getElementById('managerName').textContent = manager.name;
+
+  // --- Состояние диалога ---
+  let step = 0; // 0 = приветствие, 1 = ждём первый ответ, 2 = отправили инструкцию
+  let typingTimeout = null;
+  let inputLocked = false;
+
+  function getTime() {
+    const now = new Date();
+    return now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  }
+
+  function addManagerMessage(text, extraNode = null) {
+    const area = document.getElementById('messagesArea');
+    const wrap = document.createElement('div');
+    wrap.className = 'message manager';
+    wrap.innerHTML = `<div class="msg-sender">${manager.name}</div>`;
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.innerHTML = text;
+    wrap.appendChild(bubble);
+    if (extraNode) wrap.appendChild(extraNode);
+    const time = document.createElement('div');
+    time.className = 'msg-time';
+    time.textContent = getTime();
+    wrap.appendChild(time);
+    area.appendChild(wrap);
+    area.scrollTop = area.scrollHeight;
+  }
+
+  function addUserMessage(text) {
+    const area = document.getElementById('messagesArea');
+    const wrap = document.createElement('div');
+    wrap.className = 'message user';
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = text;
+    wrap.appendChild(bubble);
+    const time = document.createElement('div');
+    time.className = 'msg-time';
+    time.textContent = getTime();
+    wrap.appendChild(time);
+    area.appendChild(wrap);
+    area.scrollTop = area.scrollHeight;
+  }
+
+  function showTyping() {
+    const area = document.getElementById('messagesArea');
+    const typingWrap = document.createElement('div');
+    typingWrap.className = 'message manager';
+    typingWrap.id = 'typingWrap';
+    typingWrap.innerHTML = `
+      <div class="typing-indicator">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>`;
+    area.appendChild(typingWrap);
+    area.scrollTop = area.scrollHeight;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById('typingWrap');
+    if (t) t.remove();
+  }
+
+  function managerReply(text, delay = 2000, extraNode = null) {
+    inputLocked = true;
+    showTyping();
+    typingTimeout = setTimeout(() => {
+      removeTyping();
+      addManagerMessage(text, extraNode);
+      inputLocked = false;
+    }, delay);
+  }
+
+  function buildPrizeButton() {
+    const card = document.createElement('div');
+    card.className = 'instruction-card';
+    card.innerHTML = `<button class="get-prize-btn" id="getPrizeBtn">🎁 Забрать подарок →</button>`;
+    setTimeout(() => {
+      const btn = card.querySelector('#getPrizeBtn');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          window.location.href = 'prize.html';
+        });
+      }
+    }, 100);
+    return card;
+  }
+
+  // --- Первое сообщение менеджера ---
+  setTimeout(() => {
+    managerReply(
+      `Привет, ${userName}! 🌸 Меня зовут ${manager.name}, я менеджер по призам нашей акции 🎉<br><br>Скажите, вы уже раскрасили своё пасхальное яйцо? 🥚✨`,
+      1500
+    );
+    step = 1;
+  }, 600);
+
+  // --- Отправка сообщения пользователем ---
+  function sendMessage() {
+    if (inputLocked) return;
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    addUserMessage(text);
+    input.value = '';
+
+    if (step === 1) {
+      // Первый ответ пользователя
+      step = 2;
+      managerReply(
+        `Ой, как здорово! 🎊 Я уже вижу вас в нашей базе данных! 🗂️✅<br><br>Подождите буквально секунду — сверяю данные...`,
+        2200
+      );
+      setTimeout(() => {
+        managerReply(
+          `${userName}, поздравляю вас! 🥳🎉 Вы выиграли ${prizeInfo.short}! 🎁💜<br><br>Это настоящая победа — ${prizeInfo.desc}`,
+          3800
+        );
+      }, 2200);
+      setTimeout(() => {
+        const card = buildPrizeButton();
+        managerReply(
+          `Нажми на кнопку ниже, чтобы забрать свой подарок! 🎁🌟`,
+          5800,
+          card
+        );
+      }, 3800);
+    } else if (step >= 2) {
+      // Любой последующий ответ
+      const replies = [
+        `Конечно, ${userName}! 😊 Если появятся вопросы — я всегда здесь 💜`,
+        `Всё верно! Ваш приз — ${prizeInfo.short} — уже оформляется 📩✨`,
+        `Не переживайте! Всё пройдёт гладко 🌸 Если что — пишите!`,
+        `Спасибо за участие в акции! 🐣 Вы замечательны! 🎉`,
+        `Отлично! 💜 Ваш ${wonPrize} скоро будет у вас — удачи! 🍀`,
+      ];
+      const reply = replies[Math.floor(Math.random() * replies.length)];
+      managerReply(reply, 1800);
+    }
+  }
+
+  // --- Активная лента ---
+  const prizesForFeed = [
+    { name: "Пасхальные носки", icon: "🧦" },
+    { name: "AirPods Pro 2", icon: "🎧" },
+    { name: "Купон 5000 ₽", icon: "🎟️" },
+    { name: "iPhone 17", icon: "📱" },
+    { name: "Power Bank", icon: "🔋" },
+  ];
+  const feedNames = [
+    "Анна","Дмитрий","Ольга","Иван","Татьяна","Сергей","Наталья","Михаил",
+    "Екатерина","Андрей","Юлия","Алексей","Виктория","Светлана","Роман"
+  ];
+  function getRnd(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function addFeedWin(){
+    const fl = document.getElementById('feedList');
+    const prize = getRnd(prizesForFeed);
+    const name = getRnd(feedNames);
+    const item = document.createElement('div');
+    item.className = 'feed-item';
+    item.style.opacity = '0';
+    item.innerHTML = `<div class="feed-icon">${prize.icon}</div><div class="feed-text"><strong>${name}</strong> выиграл(а) <span class="feed-prize">${prize.name}</span></div>`;
+    fl.insertBefore(item, fl.firstChild);
+    setTimeout(()=>{ item.style.opacity='1'; }, 10);
+    while(fl.children.length > 5) fl.removeChild(fl.lastChild);
+  }
+  for(let i=0;i<3;i++) addFeedWin();
+  setInterval(addFeedWin, Math.random()*3000+2000);
+
+  document.getElementById('sendBtn').addEventListener('click', sendMessage);
+  document.getElementById('chatInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+  });
+
+  // Пасхальный фон
+  const easterEmojis2 = ['🥚','🐣','🌸','🌷','🐇','🌿','✨','🦋'];
+  const bg2 = document.getElementById('easterBg');
+  for(let i=0;i<35;i++){
+    const el=document.createElement('div');
+    el.className='easter-item';
+    el.textContent=easterEmojis2[Math.floor(Math.random()*easterEmojis2.length)];
+    el.style.left=Math.random()*100+'%';
+    el.style.animationDuration=(18+Math.random()*20)+'s';
+    el.style.animationDelay=(Math.random()*20)+'s';
+    el.style.fontSize=(1.5+Math.random()*1.2)+'rem';
+    bg2.appendChild(el);
+  }
+</script>
+</body>
+</html>
